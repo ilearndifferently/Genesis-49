@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Genesis 49 — Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{background:#f8faf9}</style>
+</head>
+<body class="min-h-screen flex items-start justify-center py-12">
+  <div class="w-full max-w-3xl bg-white border rounded-lg shadow p-6">
+    <h1 class="text-2xl font-serif font-bold mb-2">Genesis 49 — Quick Quiz</h1>
+    <p class="text-sm text-stone-500 mb-6">Test your knowledge of the key details from the interactive study guide.</p>
+
+    <div id="quiz-container"></div>
+
+    <div id="results" class="mt-6 hidden">
+      <p class="font-bold text-lg">Your score: <span id="score"></span> / <span id="total"></span></p>
+      <div id="review" class="mt-4 space-y-3"></div>
+      <div class="mt-6 flex items-center space-x-3">
+        <button id="retryBtn" class="px-4 py-2 bg-stone-200 rounded hover:bg-stone-300">Retry Quiz</button>
+        <button id="newQuizBtn" class="px-4 py-2 bg-stone-700 text-white rounded hover:bg-stone-800">New Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Question bank — New Quiz samples from here (expanded)
+    const questionBank = [
+      { q: "Which son is said to have 'the scepter' and is associated with the lion?", choices: ["Joseph","Judah","Benjamin","Levi"], a: 1 },
+      { q: "Who receives the 'double blessing' through his two sons (Ephraim and Manasseh)?", choices: ["Reuben","Gad","Joseph","Zebulun"], a: 2 },
+      { q: "Which three sons are described as demoted or punished because of past sins?", choices: ["Judah, Joseph, Benjamin","Reuben, Simeon, Levi","Dan, Naphtali, Asher","Gad, Asher, Issachar"], a: 1 },
+      { q: "Which tribe is linked with the symbol of a ravenous wolf?", choices: ["Benjamin","Dan","Issachar","Benjamin and Gad"], a: 0 },
+      { q: "Which son is described as a 'fruitful bough' in his blessing?", choices: ["Naphtali","Joseph","Zebulun","Simeon"], a: 1 },
+      { q: "Who led the violent massacre at Shechem, referenced in the study guide?", choices: ["Reuben and Joseph","Simeon and Levi","Judah and Benjamin","Gad and Asher"], a: 1 },
+      { q: "Which tribe became the priestly tribe, scattered throughout Israel?", choices: ["Levi","Dan","Zebulun","Issachar"], a: 0 },
+      { q: "Which two sons receive the largest portion (most verses) in Jacob's blessings?", choices: ["Reuben and Simeon","Judah and Joseph","Levi and Dan","Benjamin and Naphtali"], a: 1 },
+      { q: "Which son is described with the imagery of a 'strong donkey', a laboring agricultural tribe?", choices: ["Issachar","Asher","Gad","Naphtali"], a: 0 },
+      { q: "Which son is associated with 'a haven for ships'—a commercial blessing?", choices: ["Zebulun","Asher","Gad","Benjamin"], a: 0 },
+      { q: "Which son is likened to a 'doe let loose' known for speed or eloquence?", choices: ["Naphtali","Asher","Gad","Dan"], a: 0 },
+      { q: "Which tribe is associated with prosperity and royal food (olive oil)?", choices: ["Asher","Gad","Zebulun","Naphtali"], a: 0 },
+      { q: "Which son produced the royal line that led to King David?", choices: ["Joseph","Judah","Benjamin","Levi"], a: 1 },
+      { q: "Which son was sold by his brothers and later rose to power in Egypt?", choices: ["Benjamin","Joseph","Judah","Reuben"], a: 1 },
+      { q: "Which son is described as 'unstable as water' and lost the rights of the firstborn?", choices: ["Reuben","Simeon","Levi","Gad"], a: 0 },
+      { q: "Which two brothers were central to violence at Shechem?", choices: ["Reuben & Gad","Simeon & Levi","Judah & Benjamin","Joseph & Benjamin"], a: 1 },
+      { q: "Which tribe is noted for raiding and defensive strength east of the Jordan?", choices: ["Issachar","Gad","Asher","Zebulun"], a: 1 },
+      { q: "Which tribe is linked with commerce and settled near Sidon?", choices: ["Zebulun","Naphtali","Levi","Dan"], a: 0 },
+      { q: "Which son is described as 'a serpent in the way' in Jacob's blessing?", choices: ["Dan","Asher","Naphtali","Issachar"], a: 0 },
+      { q: "Which son is connected to 'freedom' and is likened to a doe?", choices: ["Naphtali","Asher","Gad","Dan"], a: 0 },
+      { q: "Which tribe failed to completely drive out the Canaanites but produced luxury goods like olive oil?", choices: ["Asher","Reuben","Benjamin","Simeon"], a: 0 },
+      { q: "Which son was born after Leah 'hired' Jacob with mandrakes?", choices: ["Issachar","Asher","Naphtali","Zebulun"], a: 0 },
+      { q: "Which son is associated with the image 'fruitful bough' and has two sons who become tribes?", choices: ["Judah","Joseph","Benjamin","Levi"], a: 1 },
+      { q: "Which tribe is described as a 'strong donkey' that later became agricultural?", choices: ["Issachar","Gad","Dan","Asher"], a: 0 },
+      { q: "Which son is noted for 'praise' and leadership culminating in a royal line?", choices: ["Naphtali","Judah","Joseph","Zebulun"], a: 1 },
+      { q: "Which son is explicitly linked with the imagery 'fruitful bough' and enduring blessing?", choices: ["Levi","Joseph","Reuben","Simeon"], a: 1 },
+      { q: "Which tribe's future is described as 'double blessing' through two sons?", choices: ["Judah","Joseph","Benjamin","Dan"], a: 1 },
+      { q: "Which son's descendants became the dominant northern tribe (Ephraim)?", choices: ["Gad","Joseph","Judah","Levi"], a: 1 },
+      { q: "Which son is connected with commercial advantages and borders at Sidon?", choices: ["Zebulun","Asher","Naphtali","Issachar"], a: 0 },
+      { q: "Which tribe is described as a 'ravenous wolf' in early prophecy?", choices: ["Benjamin","Gad","Dan","Asher"], a: 0 },
+      { q: "Which son was involved in the narrative that led to Israelite kingship?", choices: ["Joseph","Judah","Reuben","Simeon"], a: 1 },
+      { q: "Which tribe is described as being scattered yet used priestly for teaching the Law?", choices: ["Levi","Benjamin","Issachar","Naphtali"], a: 0 },
+      { q: "Which son is described as 'raid at their heels' indicating raider imagery?", choices: ["Gad","Dan","Asher","Simeon"], a: 0 },
+      { q: "Which son is linked to 'beautiful words' or eloquence in the blessing?", choices: ["Naphtali","Levi","Issachar","Zebulun"], a: 0 },
+      { q: "Which tribe is tied to fertile land in Galilee and the Jezreel valley?", choices: ["Issachar","Benjamin","Gad","Dan"], a: 0 },
+      { q: "Which son is associated with olive oil and luxury goods?", choices: ["Asher","Naphtali","Reuben","Levi"], a: 0 },
+      { q: "Which son's blessing includes the phrase 'his bow remained unmoved'?", choices: ["Joseph","Judah","Benjamin","Dan"], a: 0 },
+      { q: "Which tribe produced Samson according to later history?", choices: ["Dan","Gad","Asher","Issachar"], a: 0 },
+      { q: "Which son is described as having a 'haven for ships' in his blessing?", choices: ["Zebulun","Naphtali","Joseph","Benjamin"], a: 0 },
+      { q: "Which tribe's future included being warriors and producing King Saul?", choices: ["Benjamin","Judah","Levi","Dan"], a: 0 },
+      { q: "Which son is said to have 'the scepter' until Shiloh comes?", choices: ["Judah","Joseph","Benjamin","Reuben"], a: 0 }
+    ];
+
+    const container = document.getElementById('quiz-container');
+    const resultsBox = document.getElementById('results');
+    const scoreEl = document.getElementById('score');
+    const totalEl = document.getElementById('total');
+    const reviewEl = document.getElementById('review');
+    const retryBtn = document.getElementById('retryBtn');
+    const newQuizBtn = document.getElementById('newQuizBtn');
+
+    let activeQuestions = [];
+
+    function deepCopy(src) { return src.map(q => ({ q: q.q, choices: q.choices.slice(), a: q.a })); }
+    function shuffle(arr) { for (let i = arr.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+
+    function sampleNewQuestions(count) {
+      const pool = deepCopy(questionBank);
+      shuffle(pool);
+      return pool.slice(0, count);
+    }
+
+    function shuffleChoicesInActive() {
+      activeQuestions.forEach(q => {
+        const pairs = q.choices.map((c, idx) => ({ c, idx }));
+        shuffle(pairs);
+        q.choices = pairs.map(p => p.c);
+        q.a = pairs.findIndex(p => p.idx === q.a);
+      });
+    }
+
+    function render() {
+      container.innerHTML = '';
+      activeQuestions.forEach((q,i)=>{
+        const card = document.createElement('div'); card.className='mb-4 p-4 border rounded';
+        const qTitle = document.createElement('div'); qTitle.className='font-semibold mb-2'; qTitle.innerText = `${i+1}. ${q.q}`; card.appendChild(qTitle);
+        const choicesWrap = document.createElement('div'); choicesWrap.className='space-y-2';
+        q.choices.forEach((choice,j)=>{
+          const id = `q${i}_c${j}`; const label = document.createElement('label'); label.className='flex items-center space-x-3 cursor-pointer'; label.htmlFor=id;
+          const input = document.createElement('input'); input.type='radio'; input.name=`q${i}`; input.value=j; input.id=id; input.className='form-radio h-4 w-4 text-stone-700';
+          const span = document.createElement('span'); span.innerText = choice; label.appendChild(input); label.appendChild(span); choicesWrap.appendChild(label);
+        });
+        card.appendChild(choicesWrap); container.appendChild(card);
+      });
+
+      const submit = document.createElement('button'); submit.className='mt-4 px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600'; submit.innerText='Submit Answers'; submit.onclick=grade; container.appendChild(submit);
+    }
+
+    function grade() {
+      let score = 0; reviewEl.innerHTML='';
+      activeQuestions.forEach((q,i)=>{
+        const sel = document.querySelector(`input[name=q${i}]:checked`); const chosen = sel ? Number(sel.value) : -1;
+        const row = document.createElement('div'); row.className='p-3 border rounded bg-stone-50'; const h=document.createElement('div'); h.className='font-semibold'; h.innerText=`${i+1}. ${q.q}`; row.appendChild(h);
+        const your = document.createElement('div'); your.className='mt-1'; your.innerHTML=`<strong>Your answer:</strong> ${chosen===-1?'<em>None</em>':q.choices[chosen]}`; row.appendChild(your);
+        const correct = document.createElement('div'); correct.className='mt-1'; correct.innerHTML=`<strong>Correct answer:</strong> ${q.choices[q.a]}`; row.appendChild(correct);
+
+        for (let j=0;j<q.choices.length;j++){
+          const id=`q${i}_c${j}`; const inputEl=document.getElementById(id); const label=document.querySelector(`label[for=\\"${id}\\"]`); if(!inputEl||!label) continue; inputEl.disabled=true;
+          if (j===q.a) { label.classList.add('bg-green-50','border','border-green-200'); if(!label.querySelector('.correct-check')){ const c=document.createElement('span'); c.className='ml-2 text-green-700 font-bold correct-check'; c.innerText='✓'; label.appendChild(c);} }
+          if (chosen===j && chosen!==q.a){ label.classList.add('bg-red-50','border','border-red-200'); if(!label.querySelector('.incorrect-x')){ const x=document.createElement('span'); x.className='ml-2 text-red-700 font-bold incorrect-x'; x.innerText='✕'; label.appendChild(x);} }
+        }
+
+        if (chosen===q.a){ score++; const ok=document.createElement('div'); ok.className='mt-2 text-green-700 font-bold'; ok.innerText='Correct'; row.appendChild(ok);} else { const no=document.createElement('div'); no.className='mt-2 text-red-700 font-bold'; no.innerText='Incorrect'; row.appendChild(no);} 
+        reviewEl.appendChild(row);
+      });
+
+      scoreEl.innerText = score; totalEl.innerText = activeQuestions.length; resultsBox.classList.remove('hidden'); resultsBox.scrollIntoView({behavior:'smooth'});
+    }
+
+    retryBtn.onclick = () => { shuffleChoicesInActive(); resultsBox.classList.add('hidden'); reviewEl.innerHTML=''; scoreEl.innerText=''; totalEl.innerText=''; render(); container.scrollIntoView({behavior:'smooth'}); };
+
+    newQuizBtn.onclick = () => { activeQuestions = sampleNewQuestions(10); resultsBox.classList.add('hidden'); reviewEl.innerHTML=''; scoreEl.innerText=''; totalEl.innerText=''; render(); container.scrollIntoView({behavior:'smooth'}); };
+
+    // Init: sample a fresh set
+    activeQuestions = sampleNewQuestions(10); render();
+  </script>
+</body>
+</html>
