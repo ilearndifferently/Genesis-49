@@ -15,6 +15,6 @@ Notes
 - `quiz.html` is provided for direct linking/bookmarks. For single-source maintenance, the embedded quiz in `index.html` is kept in sync with `quiz.html`.
 - To remove the standalone quiz permanently, delete `quiz.html` and update any external links.
 
-Contact
 
-If you want changes (more questions, persistence of scores, or a print/export of results), tell me and I can implement them.
+
+
